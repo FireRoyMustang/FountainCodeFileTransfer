@@ -19,20 +19,20 @@ using namespace std;
 
 DWORD WINAPI ClientThread(LPVOID lpParameter)
 {
-	//·şÎñ¶ËUDPÌ×½Ó×Ö
+	//æœåŠ¡ç«¯UDPå¥—æ¥å­—
 	SOCKET ClientSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	sockaddr_in remoteAddr;
 	remoteAddr = *((sockaddr_in *)lpParameter);
 
 	int nAddrLen = sizeof(remoteAddr);
-	//·şÎñ¶Ë¶Ë¿Ú°ó¶¨
+	//æœåŠ¡ç«¯ç«¯å£ç»‘å®š
 	u_short newport = 8888;
 	sockaddr_in serAddr;
 	serAddr.sin_family = AF_INET;
 	serAddr.sin_port = htons(newport);
 	serAddr.sin_addr.S_un.S_addr = INADDR_ANY;
 
-	//³¢ÊÔ°ó¶¨ĞÂµÄ¶Ë¿Ú
+	//å°è¯•ç»‘å®šæ–°çš„ç«¯å£
 	while (bind(ClientSocket, (sockaddr *)&serAddr, sizeof(serAddr)) == SOCKET_ERROR)
 	{
 		newport++;
@@ -40,13 +40,13 @@ DWORD WINAPI ClientThread(LPVOID lpParameter)
 	}
 
 	char  sendData[10] = "HELLO!";
-	sendto(ClientSocket, sendData, strlen(sendData), 0, (sockaddr *)&remoteAddr, nAddrLen);//·¢ËÍhello
+	sendto(ClientSocket, sendData, strlen(sendData), 0, (sockaddr *)&remoteAddr, nAddrLen);//å‘é€hello
 
 	char choose[100];
 	memset(choose, 0, sizeof(choose));
-	recvfrom(ClientSocket, choose, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//½ÓÊÕÑ¡Ôñ
+	recvfrom(ClientSocket, choose, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//æ¥æ”¶é€‰æ‹©
 
-	//³õÊ¼»¯decoders
+	//åˆå§‹åŒ–decoders
 	std::map<int, Decoder> decodersMap;
 	int ret;
 	if (!strncmp(choose, "1#", 2))
@@ -56,15 +56,15 @@ DWORD WINAPI ClientThread(LPVOID lpParameter)
 			//memset(sendData,0x00,sizeof(sendData));
 			char message[BUF_MAXLEN];
 			memset(message, 0x00, sizeof(message));
-			ret = recvfrom(ClientSocket, message, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//½ÓÊÕÊı¾İ
+			ret = recvfrom(ClientSocket, message, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//æ¥æ”¶æ•°æ®
 			cout << "-----------------------------RECEIVING...-----------------------------" << endl;
 			cout << "Receive Messages:" << message << endl;
-			sendto(ClientSocket, message, strlen(message), 0, (sockaddr *)&remoteAddr, nAddrLen);//»ØÏÔÊı¾İ
-			//±íÃ÷´«ÊäÊ±¼ä¶ÔÏó
+			sendto(ClientSocket, message, strlen(message), 0, (sockaddr *)&remoteAddr, nAddrLen);//å›æ˜¾æ•°æ®
+			//è¡¨æ˜ä¼ è¾“æ—¶é—´å¯¹è±¡
 			SYSTEMTIME st;
 			GetLocalTime(&st);
 			cout << "Linking Time:" << st.wYear << "/" << st.wMonth << "/" << st.wDay << "  " << st.wHour << ":" << st.wMinute << endl;
-			cout << "Client " << inet_ntoa(remoteAddr.sin_addr) << ":" << ntohs(remoteAddr.sin_port) << " Connection£¡" << endl;
+			cout << "Client " << inet_ntoa(remoteAddr.sin_addr) << ":" << ntohs(remoteAddr.sin_port) << " Connectionï¼" << endl;
 			cout << "----------------------------------------------------------------------" << endl;
 			cout << endl;
 		}
@@ -75,11 +75,11 @@ DWORD WINAPI ClientThread(LPVOID lpParameter)
 		{
 			char recvData[BUF_MAXLEN];
 			char file_name[MAX_NAME];
-			//½ÓÊÕÎÄ¼şÃû
+			//æ¥æ”¶æ–‡ä»¶å
 			ret = recvfrom(ClientSocket, file_name, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);
 			file_name[ret] = '\0';
 			cout << "-----------------------------RECEIVING...-----------------------------" << endl;
-			//´ò¿ªÎÄ¼ş
+			//æ‰“å¼€æ–‡ä»¶
 			FILE * fp;
 			if (!(fp = fopen(file_name, "wb")))
 			{
@@ -87,9 +87,9 @@ DWORD WINAPI ClientThread(LPVOID lpParameter)
 				return -1;
 			}
 			memset(recvData, 0, BUF_MAXLEN);
-			int file_len = 0;//½ÓÊÕÎÄ¼ş
-			int file_pointer = 0;//ÎÄ¼şÖ¸Õë
-			map<int, char **> file_buffer;//½ÓÊÕ»º´æ
+			int file_len = 0;//æ¥æ”¶æ–‡ä»¶
+			int file_pointer = 0;//æ–‡ä»¶æŒ‡é’ˆ
+			map<int, char **> file_buffer;//æ¥æ”¶ç¼“å­˜
 			bool write_flag = false;
 			int counts = 0;
 			int groupId;
@@ -121,14 +121,14 @@ DWORD WINAPI ClientThread(LPVOID lpParameter)
 				}
 				decoder->addBuffer(recvData);
 				/*
-				//Ğ´ÈëÎÄ¼ş»º´æ
+				//å†™å…¥æ–‡ä»¶ç¼“å­˜
 				if (decoder.addBuffer(recvData)) {
 					cout << counts << endl;
 					file_buffer.insert(pair<int, char **>(groupId, decoder.decode()));
-					//²éÑ¯Ö¸Õë
+					//æŸ¥è¯¢æŒ‡é’ˆ
 					map<int, char ** >::iterator iter_file;
 					iter_file = file_buffer.find(file_pointer);
-					if (iter_file != file_buffer.end())//ÎÄ¼ş»º´æÖĞ´æÔÚÎÄ¼ş¿é
+					if (iter_file != file_buffer.end())//æ–‡ä»¶ç¼“å­˜ä¸­å­˜åœ¨æ–‡ä»¶å—
 					{
 						char ** write_data = iter_file->second;
 						for (int i = 0; i < 64; i++)
@@ -149,7 +149,7 @@ DWORD WINAPI ClientThread(LPVOID lpParameter)
 						file_pointer++;
 				}
 			}*/
-			//fflush(fp);//´ÅÅÌË¢ĞÂ
+			//fflush(fp);//ç£ç›˜åˆ·æ–°
 			}
 			iter = decodersMap.begin();
 			while (iter != decodersMap.end()) {
@@ -170,11 +170,11 @@ DWORD WINAPI ClientThread(LPVOID lpParameter)
 			//cout << counts << ": groupId:" << groupId << " BlockId" << blockId << endl;
 			cout << "Transfer time: " << endTime - startTime << "ms" << endl;
 			cout << "Receive " << file_name << " Successful!" << endl;
-			//±íÃ÷´«ÊäÊ±¼ä£¬¶ÔÏó
+			//è¡¨æ˜ä¼ è¾“æ—¶é—´ï¼Œå¯¹è±¡
 			SYSTEMTIME st;
 			GetLocalTime(&st);
 			cout << "Linking Time:" << st.wYear << "/" << st.wMonth << "/" << st.wDay << "  " << st.wHour << ":" << st.wMinute << endl;
-			cout << "Client " << inet_ntoa(remoteAddr.sin_addr) << ":" << ntohs(remoteAddr.sin_port) << " Connection£¡" << endl;
+			cout << "Client " << inet_ntoa(remoteAddr.sin_addr) << ":" << ntohs(remoteAddr.sin_port) << " Connectionï¼" << endl;
 			cout << "----------------------------------------------------------------------" << endl;
 			cout << endl;
 		}
@@ -226,13 +226,13 @@ int main(int argc, char* argv[])
 	{
 		char choose[100];
 		memset(choose, 0, sizeof(choose));
-		recvfrom(ServerSocket, choose, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//½ÓÊÕÑ¡Ôñ
+		recvfrom(ServerSocket, choose, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//æ¥æ”¶é€‰æ‹©
 		if (!strncmp(choose, "1#", 2))
 		{
 			cout << "Message" << endl;
 			char recvData[BUF_MAXLEN];
 			memset(recvData, 0x00, sizeof(recvData));
-			int ret = recvfrom(ServerSocket, recvData, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//½ÓÊÕhello
+			int ret = recvfrom(ServerSocket, recvData, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//æ¥æ”¶hello
 			if (!ret)
 			{
 				cout << "Receive Failed:" << GetLastError() << endl;
@@ -249,7 +249,7 @@ int main(int argc, char* argv[])
 			cout << "File" << endl;
 			char recvData[BUF_MAXLEN];
 			memset(recvData, 0x00, sizeof(recvData));
-			int ret = recvfrom(ServerSocket, recvData, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//½ÓÊÕhello
+			int ret = recvfrom(ServerSocket, recvData, BUF_MAXLEN, 0, (sockaddr *)&remoteAddr, &nAddrLen);//æ¥æ”¶hello
 			if (!ret)
 			{
 				cout << "Receive Failed:" << GetLastError() << endl;
