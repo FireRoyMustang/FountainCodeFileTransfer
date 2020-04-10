@@ -75,7 +75,7 @@ char ** Decoder::decode()
 		}
 	}
 	this->success = true;
-	//测试用
+	//虏芒脢脭脫脙
 	/*std::cout << "Code Size" << ":" << bufferData.size() << std::endl;
 	for (int i = 0; i < 64; i++)
 	{
@@ -97,7 +97,7 @@ bool Decoder::addBuffer(char* blockData)
 		return true;
 	}
 }
-int Decoder::nonZero(std::vector<int> & data)//返回最高非零位
+int Decoder::nonZero(std::vector<int> & data)//路碌禄脴脳卯赂脽路脟脕茫脦禄
 {
 	for (int i = 0; i < data.size(); i++)
 	{
