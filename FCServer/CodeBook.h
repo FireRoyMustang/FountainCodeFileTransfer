@@ -8,7 +8,7 @@ public:
 	~CodeBook();
 	std::vector<std::vector<int>> generateCodeBook();
 private:
-	unsigned int n;//码符号数
-	unsigned int k;//原符号数
+	unsigned int n;//脗毛路没潞脜脢媒
+	unsigned int k;//脭颅路没潞脜脢媒
 };
 
