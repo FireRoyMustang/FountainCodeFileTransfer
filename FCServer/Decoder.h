@@ -13,7 +13,7 @@ public:
 private:
 	std::vector<std::vector<int>> codeBook;
 	std::vector<std::vector<char>> bufferData;
-	int GaussMatrix[64][64] = { 0 };//高斯消元矩阵
+	int GaussMatrix[64][64] = { 0 };//赂脽脣鹿脧没脭陋戮脴脮贸
 	int n;
 	int k;
 	int blockLength;
